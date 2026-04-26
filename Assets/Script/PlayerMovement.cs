@@ -1,33 +1,37 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
-
+    private Vector2 move;
     private Rigidbody2D rb;
-    private Vector2 movement;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
+    public void OnMove(InputValue value)
     {
-        // Input WASD
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
+        move = value.Get<Vector2>();
 
-        // Mengatur rotasi agar menghadap arah gerak
-        if (movement != Vector2.zero)
-        {
-            float angle = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
-        }
+        string inputKey = "";
+
+        if (move == Vector2.up)
+            inputKey = "W";
+        else if (move == Vector2.down)
+            inputKey = "S";
+        else if (move == Vector2.left)
+            inputKey = "A";
+        else if (move == Vector2.right)
+            inputKey = "D";
+
+        Debug.Log(inputKey + " → " + move);
     }
 
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + move * speed * Time.fixedDeltaTime);
     }
 }
